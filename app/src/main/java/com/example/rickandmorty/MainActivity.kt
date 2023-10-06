@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RickAndMortyTheme {
-                CharactersScreen()
+                CharactersScreen(emptyList())
             }
         }
     }
