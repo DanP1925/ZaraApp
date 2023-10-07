@@ -1,6 +1,7 @@
 package com.example.rickandmorty.characters
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,14 +22,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
+import com.example.rickandmorty.R
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
-import javax.inject.Inject
 
 
 @Composable
@@ -49,7 +52,11 @@ fun CharactersScreen(
                 CharactersContent(successUiState.characters, modifier)
             }
             is CharactersUiState.Error -> {
-
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(id = R.string.error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

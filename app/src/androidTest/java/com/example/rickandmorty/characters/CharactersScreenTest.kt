@@ -1,12 +1,14 @@
 package com.example.rickandmorty.characters
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.filters.MediumTest
 import com.example.rickandmorty.FakeCharactersRepository
+import com.example.rickandmorty.TestActivity
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
+import com.example.rickandmorty.R
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +17,7 @@ import org.junit.Test
 class CharactersScreenTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<TestActivity>()
 
     private lateinit var charactersViewModel: CharactersViewModel
     private lateinit var fakeCharactersRepository: FakeCharactersRepository
@@ -41,16 +43,27 @@ class CharactersScreenTest {
     fun setupViewModel(){
         fakeCharactersRepository = FakeCharactersRepository()
         fakeCharactersRepository.addCharacters(getFakeCharacters())
-        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
     }
 
     @Test
     fun showAllCharacters() {
+        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
         setContent()
 
         composeTestRule.onNodeWithText("Rick Sanchez").assertIsDisplayed()
-
         composeTestRule.onNodeWithText("Summer Smith").assertIsDisplayed()
+    }
+
+    @Test
+    fun showAllCharacters_error(){
+        fakeCharactersRepository.makeItFail()
+        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
+        setContent()
+
+        val errorText = composeTestRule.activity.getString(R.string.error_message)
+        composeTestRule.onNodeWithText(errorText)
+
+        fakeCharactersRepository.cleanFailFlag()
     }
 
     private fun setContent(){
