@@ -6,13 +6,13 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class DefaultCharacterRepositoryTest {
+class DefaultCharactersRepositoryTest {
 
-    private lateinit var characterRepository: DefaultCharacterRepository
+    private lateinit var characterRepository: DefaultCharactersRepository
 
     @Before
     fun createRepository(){
-        characterRepository = DefaultCharacterRepository()
+        characterRepository = DefaultCharactersRepository()
     }
 
     @Test

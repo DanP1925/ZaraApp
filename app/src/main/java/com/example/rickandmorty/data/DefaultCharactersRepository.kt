@@ -2,8 +2,10 @@ package com.example.rickandmorty.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class DefaultCharacterRepository : CharacterRepository{
+class DefaultCharactersRepository @Inject constructor(
+) : CharactersRepository{
 
     private fun getFakeCharacters() = listOf<SeriesCharacter>(
         SeriesCharacter(
