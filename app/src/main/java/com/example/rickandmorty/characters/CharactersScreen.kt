@@ -18,14 +18,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
@@ -33,16 +32,16 @@ import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 
 @Composable
 fun CharactersScreen(
-    characters: List<SeriesCharacter>,
+    viewModel: CharactersViewModel,
     modifier: Modifier = Modifier
 ) {
-    val characters by remember { mutableStateOf(getFakeCharacters()) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        CharactersContent(characters, modifier)
+        CharactersContent(uiState.characters, modifier)
     }
 }
 
@@ -102,32 +101,33 @@ fun CharacterItem(
     }
 }
 
-private fun getFakeCharacters() = listOf<SeriesCharacter>(
-    SeriesCharacter(
-        1,
-        "Rick Sanchez",
-        "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-    ),
-    SeriesCharacter(
-        2,
-        "Morty Smith",
-        "https://rickandmortyapi.com/api/character/avatar/2.jpeg"
-    ),
-    SeriesCharacter(
-        3,
-        "Summer Smith",
-        "https://rickandmortyapi.com/api/character/avatar/3.jpeg"
-    )
-)
-
 @Preview(
     uiMode = UI_MODE_NIGHT_YES,
     name = "Dark"
 )
+
 @Composable
-fun PreviewCharactersCreen() {
+fun PreviewCharactersContent() {
+    val fakeCharacters = listOf<SeriesCharacter>(
+        SeriesCharacter(
+            1,
+            "Rick Sanchez",
+            "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
+        ),
+        SeriesCharacter(
+            2,
+            "Morty Smith",
+            "https://rickandmortyapi.com/api/character/avatar/2.jpeg"
+        ),
+        SeriesCharacter(
+            3,
+            "Summer Smith",
+            "https://rickandmortyapi.com/api/character/avatar/3.jpeg"
+        )
+    )
+
     RickAndMortyTheme {
-        CharactersScreen(getFakeCharacters())
+        CharactersContent(fakeCharacters)
     }
 }
 
@@ -137,7 +137,13 @@ fun PreviewCharactersCreen() {
 )
 @Composable
 fun PreviewCharacterItem() {
+    val fakeCharacter = SeriesCharacter(
+        1,
+        "Rick Sanchez",
+        "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
+    )
+
     RickAndMortyTheme {
-        CharacterItem(getFakeCharacters()[0])
+        CharacterItem(fakeCharacter)
     }
 }

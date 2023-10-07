@@ -71,4 +71,7 @@ dependencies {
 
     //Image Managing
     implementation(libs.io.coilkt.coil.compose)
+
+    //Testing
+    debugImplementation(libs.kotlinx.coroutines.test)
 }
