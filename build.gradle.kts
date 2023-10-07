@@ -4,4 +4,8 @@ plugins {
     alias(libs.plugins.android.application) apply false
     @Suppress("DSL_SCOPE_VIOLATION")
     alias(libs.plugins.kotlin.android) apply false
+    @Suppress("DSL_SCOPE_VIOLATION")
+    alias(libs.plugins.hilt) apply false
+    @Suppress("DSL_SCOPE_VIOLATION")
+    alias(libs.plugins.kapt) apply false
 }
