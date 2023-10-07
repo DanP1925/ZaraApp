@@ -24,28 +24,10 @@ class CharactersScreenTest {
         composeTestRule.onNodeWithText("Summer Smith").assertIsDisplayed()
     }
 
-    private fun getFakeCharacters() = listOf<SeriesCharacter>(
-        SeriesCharacter(
-            1,
-            "Rick Sanchez",
-            "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-        ),
-        SeriesCharacter(
-            2,
-            "Morty Smith",
-            "https://rickandmortyapi.com/api/character/avatar/2.jpeg"
-        ),
-        SeriesCharacter(
-            3,
-            "Summer Smith",
-            "https://rickandmortyapi.com/api/character/avatar/3.jpeg"
-        )
-    )
-
     private fun setContent(){
         composeTestRule.setContent {
             RickAndMortyTheme {
-                CharactersScreen(getFakeCharacters())
+                CharactersScreen(CharactersViewModel())
             }
         }
     }

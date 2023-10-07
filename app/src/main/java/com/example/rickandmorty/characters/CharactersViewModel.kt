@@ -3,17 +3,20 @@ package com.example.rickandmorty.characters
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rickandmorty.data.SeriesCharacter
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class CharactersUiState(
     val characters: List<SeriesCharacter> = emptyList()
 )
 
-class CharactersViewModel(
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<CharactersUiState> =

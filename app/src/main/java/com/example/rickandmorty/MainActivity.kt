@@ -14,15 +14,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.rickandmorty.characters.CharactersScreen
 import com.example.rickandmorty.characters.CharactersViewModel
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val charactersViewModel : CharactersViewModel by viewModels()
-
         setContent {
             RickAndMortyTheme {
+                val charactersViewModel : CharactersViewModel by viewModels()
                 CharactersScreen(charactersViewModel)
             }
         }

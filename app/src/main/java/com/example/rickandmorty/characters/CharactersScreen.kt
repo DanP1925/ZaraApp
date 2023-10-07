@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
+import javax.inject.Inject
 
 
 @Composable
@@ -35,6 +36,7 @@ fun CharactersScreen(
     viewModel: CharactersViewModel,
     modifier: Modifier = Modifier
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Surface(
