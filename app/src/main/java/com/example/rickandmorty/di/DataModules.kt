@@ -1,15 +1,21 @@
 package com.example.rickandmorty.di
 
+import android.content.Context
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.rickandmorty.data.CharactersRepository
 import com.example.rickandmorty.data.DefaultCharactersRepository
+import com.example.rickandmorty.data.source.local.CharacterDao
 import com.example.rickandmorty.data.source.local.CharactersDBDataSource
 import com.example.rickandmorty.data.source.local.CharactersLocalDataSource
+import com.example.rickandmorty.data.source.local.RickAndMortyDatabase
 import com.example.rickandmorty.data.source.network.CharactersRemoteDataSource
 import com.example.rickandmorty.data.source.network.CharactersServerDataSource
 import com.example.rickandmorty.data.source.network.CharactersService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import retrofit2.Retrofit
@@ -53,10 +59,26 @@ object CharactersRepositoryModule {
     }
 
     @Singleton
+    @Provides
+    fun providesRickAndMortyDatabase(@ApplicationContext context: Context): RickAndMortyDatabase{
+        return Room.databaseBuilder(
+            context.applicationContext,
+            RickAndMortyDatabase::class.java,
+            "rickandmory-db"
+        ).build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesCharacterDao(db : RickAndMortyDatabase): CharacterDao{
+        return db.characterDao()
+    }
+
+    @Singleton
     @LocalCharactersDataSource
     @Provides
-    fun providesLocalCharactersDataSource(): CharactersLocalDataSource {
-        return CharactersDBDataSource()
+    fun providesLocalCharactersDataSource(characterDao : CharacterDao): CharactersLocalDataSource {
+        return CharactersDBDataSource(characterDao)
     }
 
     @Singleton

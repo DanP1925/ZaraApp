@@ -1,19 +1,26 @@
 package com.example.rickandmorty.data.source.local
 
 import com.example.rickandmorty.data.SeriesCharacter
+import com.example.rickandmorty.data.toCharacterEntity
 
-class CharactersDBDataSource : CharactersLocalDataSource {
+class CharactersDBDataSource(
+    private val characterDao: CharacterDao
+) : CharactersLocalDataSource {
 
     override suspend fun getCharacters(): List<SeriesCharacter> {
-        TODO("Not yet implemented")
+        return characterDao.getAllCharacters().map {
+            it.toSeriesCharacter()
+        }
     }
 
     override suspend fun saveCharacters(characters: List<SeriesCharacter>) {
-        TODO("Not yet implemented")
+        characterDao.insertAllCharacters(characters = characters.map {
+            it.toCharacterEntity()
+        })
     }
 
     override suspend fun deleteCharacters() {
-        TODO("Not yet implemented")
+        characterDao.deleteAllCharacters()
     }
 
 

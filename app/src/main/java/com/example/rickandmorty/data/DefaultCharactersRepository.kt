@@ -16,7 +16,7 @@ class DefaultCharactersRepository @Inject constructor(
 
     override fun getCharacters(): Flow<List<SeriesCharacter>> = flow {
         val characters = charactersRemoteDataSource.getCharacters()
-        if (!characters.isNullOrEmpty()){
+        if (characters.isNotEmpty()){
             charactersLocalDataSource.deleteCharacters()
             charactersLocalDataSource.saveCharacters(characters)
             emit(characters)
