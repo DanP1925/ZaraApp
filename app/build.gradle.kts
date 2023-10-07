@@ -86,4 +86,9 @@ dependencies {
     //Dependency Injection
     implementation(libs.hilt.android.core)
     kapt(libs.hilt.compiler)
+
+    //Networking
+    implementation(libs.square.retrofit)
+    implementation(libs.gson)
+    implementation(libs.square.retrofit.converter.gson)
 }

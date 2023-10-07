@@ -43,7 +43,15 @@ fun CharactersScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        CharactersContent(uiState.characters, modifier)
+        when (uiState) {
+            is CharactersUiState.Success -> {
+                val successUiState = (uiState as CharactersUiState.Success)
+                CharactersContent(successUiState.characters, modifier)
+            }
+            is CharactersUiState.Error -> {
+
+            }
+        }
     }
 }
 

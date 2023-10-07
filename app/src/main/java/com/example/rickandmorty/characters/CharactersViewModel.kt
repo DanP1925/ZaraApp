@@ -7,12 +7,19 @@ import com.example.rickandmorty.data.SeriesCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class CharactersUiState(
-    val characters: List<SeriesCharacter> = emptyList()
-)
+sealed class CharactersUiState {
+    data class Success(
+        val characters: List<SeriesCharacter> = emptyList()
+    ) : CharactersUiState()
+
+    data class Error(
+        val exception: Throwable
+    ) : CharactersUiState()
+}
 
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
@@ -20,15 +27,17 @@ class CharactersViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<CharactersUiState> =
-        MutableStateFlow(CharactersUiState())
+        MutableStateFlow(CharactersUiState.Success(emptyList()))
     val uiState: StateFlow<CharactersUiState> = _uiState
 
     init {
         viewModelScope.launch {
-            charactersRepository.getCharacters().collect { characters ->
-                _uiState.value = CharactersUiState(characters)
-            }
+            charactersRepository.getCharacters()
+                .catch { exception ->
+                    _uiState.value = CharactersUiState.Error(exception) }
+                .collect { characters ->
+                    _uiState.value = CharactersUiState.Success(characters)
+                }
         }
     }
-
 }
