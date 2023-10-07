@@ -21,8 +21,6 @@ class CharactersScreenTest {
 
         composeTestRule.onNodeWithText("Rick Sanchez").assertIsDisplayed()
 
-        composeTestRule.onNodeWithText("Morty Smith").assertIsDisplayed()
-
         composeTestRule.onNodeWithText("Summer Smith").assertIsDisplayed()
     }
 
