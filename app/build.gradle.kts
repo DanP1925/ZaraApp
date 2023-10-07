@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.kapt)
     @Suppress("DSL_SCOPE_VIOLATION")
     alias(libs.plugins.hilt)
+    @Suppress("DSL_SCOPE_VIOLATION")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -91,4 +93,11 @@ dependencies {
     implementation(libs.square.retrofit)
     implementation(libs.gson)
     implementation(libs.square.retrofit.converter.gson)
+
+    //Database
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
+
 }

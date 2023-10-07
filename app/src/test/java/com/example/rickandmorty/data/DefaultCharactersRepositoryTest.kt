@@ -5,14 +5,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
 import org.junit.Test
 
 class DefaultCharactersRepositoryTest {
 
     private lateinit var characterRepository: DefaultCharactersRepository
 
-    private lateinit var fakeRemoteDataSource: FakeCharactersDataSource
+    private lateinit var fakeRemoteDataSource: FakeCharactersRemoteDataSource
+    private lateinit var fakeLocalDataSource: FakeCharactersLocalDataSource
 
     private fun getFakeCharacters() = listOf<SeriesCharacter>(
         SeriesCharacter(
@@ -33,16 +33,19 @@ class DefaultCharactersRepositoryTest {
     )
     @Test
     fun getCharactersTest() = runTest{
-        fakeRemoteDataSource = FakeCharactersDataSource()
+        fakeRemoteDataSource = FakeCharactersRemoteDataSource()
+        fakeLocalDataSource = FakeCharactersLocalDataSource()
         fakeRemoteDataSource.addCharacters(getFakeCharacters())
         characterRepository = DefaultCharactersRepository(
             fakeRemoteDataSource,
+            fakeLocalDataSource,
             StandardTestDispatcher(testScheduler)
         )
 
         val characters = characterRepository.getCharacters().first()
         advanceUntilIdle()
         assertEquals(characters[0].name,"Rick Sanchez")
+        assertEquals(fakeLocalDataSource.getCharacters().size,3)
     }
 
 }
