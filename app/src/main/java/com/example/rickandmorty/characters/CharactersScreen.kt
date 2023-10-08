@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.rickandmorty.R
@@ -36,7 +37,8 @@ import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 
 @Composable
 fun CharactersScreen(
-    viewModel: CharactersViewModel,
+    viewModel: CharactersViewModel = hiltViewModel(),
+    onCharacterSelected: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -49,8 +51,12 @@ fun CharactersScreen(
         when (uiState) {
             is CharactersUiState.Success -> {
                 val successUiState = (uiState as CharactersUiState.Success)
-                CharactersContent(successUiState.characters, modifier)
+                CharactersContent(
+                    successUiState.characters,
+                    onCharacterSelected
+                )
             }
+
             is CharactersUiState.Error -> {
                 Toast.makeText(
                     LocalContext.current,
@@ -65,6 +71,7 @@ fun CharactersScreen(
 @Composable
 fun CharactersContent(
     characters: List<SeriesCharacter>,
+    onCharacterSelected: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -74,20 +81,24 @@ fun CharactersContent(
         modifier = modifier.padding(24.dp)
     ) {
         items(characters) { character ->
-            CharacterItem(character)
+            CharacterItem(character, onCharacterSelected)
         }
     }
 }
 
 @Composable
 fun CharacterItem(
-    character: SeriesCharacter
+    character: SeriesCharacter,
+    onCharacterSelected: (id: Int) -> Unit
 ) {
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .border(1.5.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(15.dp))
+            .border(1.5.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(15.dp)),
+        onClick = {
+            onCharacterSelected(character.id)
+        }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,7 +155,7 @@ fun PreviewCharactersContent() {
     )
 
     RickAndMortyTheme {
-        CharactersContent(fakeCharacters)
+        CharactersContent(fakeCharacters, {})
     }
 }
 
@@ -161,6 +172,6 @@ fun PreviewCharacterItem() {
     )
 
     RickAndMortyTheme {
-        CharacterItem(fakeCharacter)
+        CharacterItem(fakeCharacter,{})
     }
 }

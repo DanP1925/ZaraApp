@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import okio.IOException
 import javax.inject.Inject
 
 class DefaultCharactersRepository @Inject constructor(
@@ -15,11 +16,15 @@ class DefaultCharactersRepository @Inject constructor(
 ) : CharactersRepository {
 
     override fun getCharacters(): Flow<List<SeriesCharacter>> = flow {
-        val characters = charactersRemoteDataSource.getCharacters()
-        if (characters.isNotEmpty()){
-            charactersLocalDataSource.deleteCharacters()
-            charactersLocalDataSource.saveCharacters(characters)
-            emit(characters)
+        try{
+            val characters = charactersRemoteDataSource.getCharacters()
+            if (characters.isNotEmpty()){
+                charactersLocalDataSource.deleteCharacters()
+                charactersLocalDataSource.saveCharacters(characters)
+                emit(characters)
+            }
+        } catch (exception: IOException){
+            emit(charactersLocalDataSource.getCharacters())
         }
     }.flowOn(ioDispatcher)
 
