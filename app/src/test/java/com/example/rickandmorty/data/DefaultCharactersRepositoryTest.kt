@@ -63,16 +63,18 @@ class DefaultCharactersRepositoryTest {
 
     @Test
     fun getCharacterTest() = runTest{
+        val fakeCharacter = getFakeCharacter()
+
         fakeRemoteDataSource = FakeCharactersRemoteDataSource()
         fakeLocalDataSource = FakeCharactersLocalDataSource()
-
+        fakeRemoteDataSource.addCharacterDetail(fakeCharacter)
         characterRepository = DefaultCharactersRepository(
             fakeRemoteDataSource,
             fakeLocalDataSource,
             StandardTestDispatcher(testScheduler)
         )
 
-        val characterDetail = characterRepository.getCharacterDetail().first()
+        val characterDetail = characterRepository.getCharacterDetail(fakeCharacter.id).first()
         advanceUntilIdle()
         assertEquals(characterDetail.name , "Rick Sanchez")
         assertEquals(characterDetail.status, "Alive")

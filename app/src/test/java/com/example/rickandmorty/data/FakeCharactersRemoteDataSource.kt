@@ -6,8 +6,18 @@ import com.example.rickandmorty.data.source.network.CharactersRemoteDataSource
 class FakeCharactersRemoteDataSource : CharactersRemoteDataSource {
 
     private var savedCharacters : MutableList<SeriesCharacter> = emptyList<SeriesCharacter>().toMutableList()
+    private var savedCharacterDetail = SeriesCharacterDetail()
+
     override suspend fun getCharacters(): List<SeriesCharacter> {
         return savedCharacters
+    }
+
+    override suspend fun getCharacterDetail(id: Int): SeriesCharacterDetail {
+        return if (id == savedCharacterDetail.id){
+            savedCharacterDetail
+        } else {
+            SeriesCharacterDetail()
+        }
     }
 
     @VisibleForTesting
@@ -15,4 +25,10 @@ class FakeCharactersRemoteDataSource : CharactersRemoteDataSource {
         savedCharacters.clear()
         savedCharacters.addAll(characters)
     }
+
+    @VisibleForTesting
+    fun addCharacterDetail(characterDetail: SeriesCharacterDetail){
+        savedCharacterDetail = characterDetail
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.rickandmorty.data.source.network
 
 import com.example.rickandmorty.data.SeriesCharacter
+import com.example.rickandmorty.data.SeriesCharacterDetail
 import javax.inject.Inject
 
 class CharactersServerDataSource @Inject constructor(
@@ -11,6 +12,10 @@ class CharactersServerDataSource @Inject constructor(
         return charactersService.getCharacters().results.map {
             it.toSeriesCharacter()
         }
+    }
+
+    override suspend fun getCharacterDetail(id: Int): SeriesCharacterDetail {
+        return charactersService.getCharacterDetail(id).toSeriesCharacterDetail()
     }
 
 }

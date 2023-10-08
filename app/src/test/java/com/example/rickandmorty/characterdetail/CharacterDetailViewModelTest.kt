@@ -1,7 +1,9 @@
 package com.example.rickandmorty.characterdetail
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.rickandmorty.FakeCharactersRepository
 import com.example.rickandmorty.MainDispatcherRule
+import com.example.rickandmorty.RickAndMortyArgs
 import com.example.rickandmorty.data.SeriesCharacterDetail
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -40,8 +42,13 @@ class CharacterDetailViewModelTest {
     @Test
     fun characterDetailViewModel_Initialization_FetchCharacter() = runTest {
         val fakeCharacter = getFakeCharacter()
+        val fakeSavedStateHandle = SavedStateHandle()
+        fakeSavedStateHandle[RickAndMortyArgs.CHARACTER_ID_ARG] = fakeCharacter.id
 
-        characterDetailViewModel = CharacterDetailViewModel(fakeCharactersRepository)
+        characterDetailViewModel = CharacterDetailViewModel(
+            fakeCharactersRepository,
+            fakeSavedStateHandle
+        )
 
         assertTrue(characterDetailViewModel.uiState.value is CharacterDetailUiState.Success)
         val characterDetail =
