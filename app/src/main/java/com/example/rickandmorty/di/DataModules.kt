@@ -34,29 +34,7 @@ annotation class LocalCharactersDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CharactersRepositoryModule {
-
-    @Singleton
-    @Provides
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://rickandmortyapi.com/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideCharactersService(retrofit: Retrofit): CharactersService {
-        return retrofit.create(CharactersService::class.java)
-    }
-
-    @Singleton
-    @RemoteCharactersDataSource
-    @Provides
-    fun providesRemoteCharactersDataSource(charactersService: CharactersService): CharactersRemoteDataSource {
-        return CharactersServerDataSource(charactersService)
-    }
+object DatabaseModule{
 
     @Singleton
     @Provides
@@ -80,6 +58,40 @@ object CharactersRepositoryModule {
     fun providesLocalCharactersDataSource(characterDao : CharacterDao): CharactersLocalDataSource {
         return CharactersDBDataSource(characterDao)
     }
+
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule{
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://rickandmortyapi.com/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCharactersService(retrofit: Retrofit): CharactersService {
+        return retrofit.create(CharactersService::class.java)
+    }
+
+    @Singleton
+    @RemoteCharactersDataSource
+    @Provides
+    fun providesRemoteCharactersDataSource(charactersService: CharactersService): CharactersRemoteDataSource {
+        return CharactersServerDataSource(charactersService)
+    }
+
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object CharactersRepositoryModule {
 
     @Singleton
     @Provides

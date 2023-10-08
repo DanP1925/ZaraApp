@@ -5,19 +5,27 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.lifecycle.SavedStateHandle
+import androidx.test.filters.MediumTest
 import com.example.rickandmorty.FakeCharactersRepository
 import com.example.rickandmorty.R
 import com.example.rickandmorty.RickAndMortyArgs
 import com.example.rickandmorty.HiltTestActivity
 import com.example.rickandmorty.data.SeriesCharacterDetail
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
+@MediumTest
 class CharacterDetailScreenTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     private lateinit var characterDetailViewModel: CharacterDetailViewModel
