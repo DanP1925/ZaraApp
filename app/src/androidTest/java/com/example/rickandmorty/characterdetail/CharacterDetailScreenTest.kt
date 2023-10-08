@@ -16,6 +16,8 @@ class CharacterDetailScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<TestActivity>()
 
+    private lateinit var characterDetailViewModel: CharacterDetailViewModel
+
     private fun getFakeCharacter() = SeriesCharacterDetail(
         1,
         "Rick Sanchez",
@@ -31,6 +33,7 @@ class CharacterDetailScreenTest {
     @Test
     fun showCharacterDetail() {
         val fakeCharacter = getFakeCharacter()
+        characterDetailViewModel = CharacterDetailViewModel()
         setContent()
 
         val nodes = composeTestRule.onAllNodes(hasText(fakeCharacter.name))
@@ -47,7 +50,7 @@ class CharacterDetailScreenTest {
     private fun setContent() {
         composeTestRule.setContent {
             RickAndMortyTheme {
-                CharacterDetailScreen()
+                CharacterDetailScreen(characterDetailViewModel)
             }
         }
     }

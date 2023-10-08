@@ -1,6 +1,7 @@
 package com.example.rickandmorty.characterdetail
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -17,13 +18,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.example.rickandmorty.R
 import com.example.rickandmorty.data.SeriesCharacterDetail
@@ -32,16 +37,32 @@ import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 
 @Composable
 fun CharacterDetailScreen(
+    viewModel: CharacterDetailViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        CharacterDetailContent(
-            characterDetail = getFakeCharacter(),
-            modifier = modifier
-        )
+        when (uiState){
+            is CharacterDetailUiState.Success -> {
+                val successUiState = (uiState as CharacterDetailUiState.Success)
+                CharacterDetailContent(
+                    characterDetail = successUiState.character,
+                    modifier = modifier
+                )
+            }
+            is CharacterDetailUiState.Error -> {
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(id = R.string.error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }
 
@@ -72,7 +93,8 @@ fun CharacterDetailContent(
                 loading = {
                     CircularProgressIndicator()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 48.dp)
                     .aspectRatio(1f)
                     .border(2.dp, MaterialTheme.colorScheme.primary),
