@@ -56,7 +56,6 @@ fun CharactersScreen(
                     onCharacterSelected
                 )
             }
-
             is CharactersUiState.Error -> {
                 Toast.makeText(
                     LocalContext.current,
@@ -133,7 +132,6 @@ fun CharacterItem(
     uiMode = UI_MODE_NIGHT_YES,
     name = "Dark"
 )
-
 @Composable
 fun PreviewCharactersContent() {
     val fakeCharacters = listOf<SeriesCharacter>(
@@ -161,7 +159,7 @@ fun PreviewCharactersContent() {
 
 @Preview(
     uiMode = UI_MODE_NIGHT_YES,
-    name = "Dark"
+    name = "Dark Item"
 )
 @Composable
 fun PreviewCharacterItem() {

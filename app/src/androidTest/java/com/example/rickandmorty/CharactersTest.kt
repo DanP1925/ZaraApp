@@ -61,7 +61,7 @@ class CharactersTest {
     private fun setContent(){
         composeTestRule.setContent {
             RickAndMortyTheme {
-                CharactersScreen(charactersViewModel)
+                CharactersScreen(charactersViewModel,{})
             }
         }
     }
