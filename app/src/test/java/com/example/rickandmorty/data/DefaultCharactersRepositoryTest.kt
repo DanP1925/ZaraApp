@@ -31,6 +31,19 @@ class DefaultCharactersRepositoryTest {
             "https://rickandmortyapi.com/api/character/avatar/3.jpeg"
         )
     )
+
+    private fun getFakeCharacter() = SeriesCharacterDetail(
+        1,
+        "Rick Sanchez",
+        "Alive",
+        "Human",
+        "",
+        "Male",
+        "Earth (C-137)",
+        "Citadel of Ricks",
+        "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
+    )
+
     @Test
     fun getCharactersTest() = runTest{
         fakeRemoteDataSource = FakeCharactersRemoteDataSource()
@@ -46,6 +59,24 @@ class DefaultCharactersRepositoryTest {
         advanceUntilIdle()
         assertEquals(characters[0].name,"Rick Sanchez")
         assertEquals(fakeLocalDataSource.getCharacters().size,3)
+    }
+
+    @Test
+    fun getCharacterTest() = runTest{
+        fakeRemoteDataSource = FakeCharactersRemoteDataSource()
+        fakeLocalDataSource = FakeCharactersLocalDataSource()
+
+        characterRepository = DefaultCharactersRepository(
+            fakeRemoteDataSource,
+            fakeLocalDataSource,
+            StandardTestDispatcher(testScheduler)
+        )
+
+        val characterDetail = characterRepository.getCharacterDetail().first()
+        advanceUntilIdle()
+        assertEquals(characterDetail.name , "Rick Sanchez")
+        assertEquals(characterDetail.status, "Alive")
+        assertEquals(characterDetail.species, "Human")
     }
 
 }

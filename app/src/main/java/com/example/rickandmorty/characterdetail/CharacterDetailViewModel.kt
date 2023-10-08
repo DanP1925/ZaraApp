@@ -2,10 +2,12 @@ package com.example.rickandmorty.characterdetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rickandmorty.data.CharactersRepository
 import com.example.rickandmorty.data.SeriesCharacterDetail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,19 +24,8 @@ sealed class CharacterDetailUiState {
 
 @HiltViewModel
 class CharacterDetailViewModel @Inject constructor(
+    private val charactersRepository: CharactersRepository
 ) : ViewModel() {
-
-    private fun getFakeCharacter() = SeriesCharacterDetail(
-        1,
-        "Rick Sanchez",
-        "Alive",
-        "Human",
-        "",
-        "Male",
-        "Earth (C-137)",
-        "Citadel of Ricks",
-        "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
-    )
 
 
     private val _uiState: MutableStateFlow<CharacterDetailUiState> = MutableStateFlow(
@@ -44,7 +35,13 @@ class CharacterDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _uiState.value = CharacterDetailUiState.Success(getFakeCharacter())
+            charactersRepository.getCharacterDetail()
+                .catch { exception ->
+                    _uiState.value = CharacterDetailUiState.Error(exception)
+                }
+                .collect { characterDetail ->
+                    _uiState.value = CharacterDetailUiState.Success(characterDetail)
+                }
         }
     }
 

@@ -15,6 +15,18 @@ class DefaultCharactersRepository @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher
 ) : CharactersRepository {
 
+    private fun getFakeCharacter() = SeriesCharacterDetail(
+        1,
+        "Rick Sanchez",
+        "Alive",
+        "Human",
+        "",
+        "Male",
+        "Earth (C-137)",
+        "Citadel of Ricks",
+        "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
+    )
+
     override fun getCharacters(): Flow<List<SeriesCharacter>> = flow {
         try{
             val characters = charactersRemoteDataSource.getCharacters()
@@ -26,6 +38,10 @@ class DefaultCharactersRepository @Inject constructor(
         } catch (exception: IOException){
             emit(charactersLocalDataSource.getCharacters())
         }
+    }.flowOn(ioDispatcher)
+
+    override fun getCharacterDetail(): Flow<SeriesCharacterDetail> = flow {
+        emit(getFakeCharacter())
     }.flowOn(ioDispatcher)
 
 }

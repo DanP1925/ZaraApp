@@ -40,7 +40,7 @@ class CharactersScreenTest {
         )
     )
     @Before
-    fun setupViewModel(){
+    fun setupCharacterScreen(){
         fakeCharactersRepository = FakeCharactersRepository()
         fakeCharactersRepository.addCharacters(getFakeCharacters())
     }
