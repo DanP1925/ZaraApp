@@ -1,6 +1,10 @@
-package com.example.rickandmorty.characters
+package com.example.rickandmorty.characterdetail
 
+import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyAncestor
+import androidx.compose.ui.test.hasAnySibling
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.example.rickandmorty.R
@@ -16,7 +20,7 @@ class CharacterDetailScreenTest {
     @get:Rule
     val composeTestRule = createAndroidComposeRule<TestActivity>()
 
-    fun getFakeCharacter() = SeriesCharacterDetail(
+    private fun getFakeCharacter() = SeriesCharacterDetail(
         1,
         "Rick Sanchez",
         "Alive",
@@ -29,11 +33,13 @@ class CharacterDetailScreenTest {
     )
 
     @Test
-    fun showCharacterDetail(){
+    fun showCharacterDetail() {
         val fakeCharacter = getFakeCharacter()
         setContent()
 
-        composeTestRule.onNodeWithText(fakeCharacter.name).assertIsDisplayed()
+        val nodes = composeTestRule.onAllNodes(hasText(fakeCharacter.name))
+        nodes[0].assertIsDisplayed()
+        nodes[1].assertIsDisplayed()
         composeTestRule.onNodeWithText(fakeCharacter.species).assertIsDisplayed()
         composeTestRule.onNodeWithText(fakeCharacter.origin).assertIsDisplayed()
         composeTestRule.onNodeWithText(
@@ -42,7 +48,7 @@ class CharacterDetailScreenTest {
         composeTestRule.onNodeWithText(fakeCharacter.location).assertIsDisplayed()
     }
 
-    private fun setContent(){
+    private fun setContent() {
         composeTestRule.setContent {
             RickAndMortyTheme {
                 CharacterDetailScreen()

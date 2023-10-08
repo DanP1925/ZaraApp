@@ -2,18 +2,26 @@ package com.example.rickandmorty.characterdetail
 
 import android.content.res.Configuration
 import androidx.annotation.StringRes
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
@@ -49,57 +57,89 @@ fun CharacterDetailContent(
             .padding(24.dp)
     ) {
         Column(
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = characterDetail.name,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             SubcomposeAsyncImage(
                 model = characterDetail.image,
                 contentDescription = characterDetail.image + " image",
                 loading = {
                     CircularProgressIndicator()
                 },
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 48.dp)
+                    .aspectRatio(1f)
+                    .border(2.dp, MaterialTheme.colorScheme.primary),
+                contentScale = ContentScale.Crop
             )
-            CharacterDetailInfo(
-                label = R.string.character_detail_name,
-                value = characterDetail.name
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_status,
-                value = characterDetail.status
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_species,
-                value = characterDetail.species
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_type,
-                value = characterDetail.type
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_gender,
-                value = characterDetail.gender
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_origin,
-                value = characterDetail.origin
-            )
-            CharacterDetailInfo(
-                label = R.string.character_detail_location,
-                value = characterDetail.location
-            )
+            Spacer(modifier = Modifier.height(16.dp))
+            CharacterDetailInfo(characterDetail = characterDetail)
         }
     }
 }
 
+
 @Composable
 fun CharacterDetailInfo(
+    characterDetail: SeriesCharacterDetail,
+    modifier: Modifier = Modifier
+) {
+    Column {
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_name,
+            value = characterDetail.name
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_status,
+            value = characterDetail.status
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_species,
+            value = characterDetail.species
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_type,
+            value = characterDetail.type
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_gender,
+            value = characterDetail.gender
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_origin,
+            value = characterDetail.origin
+        )
+        CharacterDetailInfoItem(
+            label = R.string.character_detail_location,
+            value = characterDetail.location
+        )
+    }
+}
+
+@Composable
+fun CharacterDetailInfoItem(
     @StringRes label: Int,
     value: String,
     modifier: Modifier = Modifier
 ) {
     if (value.isNotEmpty()) {
-        Row {
-            Text(formatLabel(stringResource(id = label)))
-            Text(value)
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = formatLabel(stringResource(id = label)),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
