@@ -1,15 +1,11 @@
 package com.example.rickandmorty.characterdetail
 
-import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasAnyAncestor
-import androidx.compose.ui.test.hasAnySibling
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.example.rickandmorty.R
 import com.example.rickandmorty.TestActivity
-import com.example.rickandmorty.characterdetail.CharacterDetailScreen
 import com.example.rickandmorty.data.SeriesCharacterDetail
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import org.junit.Rule
