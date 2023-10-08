@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.filters.MediumTest
 import com.example.rickandmorty.FakeCharactersRepository
-import com.example.rickandmorty.TestActivity
+import com.example.rickandmorty.HiltTestActivity
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import com.example.rickandmorty.R
@@ -17,7 +17,7 @@ import org.junit.Test
 class CharactersScreenTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<TestActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     private lateinit var charactersViewModel: CharactersViewModel
     private lateinit var fakeCharactersRepository: FakeCharactersRepository

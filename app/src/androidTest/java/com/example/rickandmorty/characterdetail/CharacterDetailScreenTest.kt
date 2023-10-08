@@ -4,9 +4,11 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.lifecycle.SavedStateHandle
 import com.example.rickandmorty.FakeCharactersRepository
 import com.example.rickandmorty.R
-import com.example.rickandmorty.TestActivity
+import com.example.rickandmorty.RickAndMortyArgs
+import com.example.rickandmorty.HiltTestActivity
 import com.example.rickandmorty.data.SeriesCharacterDetail
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import org.junit.Before
@@ -16,10 +18,11 @@ import org.junit.Test
 class CharacterDetailScreenTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<TestActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     private lateinit var characterDetailViewModel: CharacterDetailViewModel
     private lateinit var fakeCharactersRepository: FakeCharactersRepository
+    private lateinit var fakeSavedStateHandle: SavedStateHandle
 
     private fun getFakeCharacter() = SeriesCharacterDetail(
         1,
@@ -34,15 +37,20 @@ class CharacterDetailScreenTest {
     )
 
     @Before
-    fun setupCharacterDetailScreen(){
+    fun setupCharacterDetailScreen() {
         fakeCharactersRepository = FakeCharactersRepository()
         fakeCharactersRepository.addCharacterDetail(getFakeCharacter())
+        fakeSavedStateHandle = SavedStateHandle()
+        fakeSavedStateHandle[RickAndMortyArgs.CHARACTER_ID_ARG] = getFakeCharacter().id
     }
 
     @Test
     fun showCharacterDetail() {
         val fakeCharacter = getFakeCharacter()
-        characterDetailViewModel = CharacterDetailViewModel(fakeCharactersRepository)
+        characterDetailViewModel = CharacterDetailViewModel(
+            fakeCharactersRepository,
+            fakeSavedStateHandle
+        )
         setContent()
 
         val nodes = composeTestRule.onAllNodes(hasText(fakeCharacter.name))
@@ -57,9 +65,12 @@ class CharacterDetailScreenTest {
     }
 
     @Test
-    fun showCharacterDetail_error(){
+    fun showCharacterDetail_error() {
         fakeCharactersRepository.makeItFail()
-        characterDetailViewModel = CharacterDetailViewModel(fakeCharactersRepository)
+        characterDetailViewModel = CharacterDetailViewModel(
+            fakeCharactersRepository,
+            fakeSavedStateHandle
+        )
         setContent()
 
         val errorText = composeTestRule.activity.getString(R.string.error_message)

@@ -1,12 +1,10 @@
 package com.example.rickandmorty
 
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.filters.LargeTest
-import com.example.rickandmorty.characters.CharactersScreen
 import com.example.rickandmorty.characters.CharactersViewModel
 import com.example.rickandmorty.data.SeriesCharacter
 import com.example.rickandmorty.ui.theme.RickAndMortyTheme
@@ -18,7 +16,7 @@ import org.junit.Test
 class CharactersTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     private lateinit var charactersViewModel: CharactersViewModel
     private lateinit var fakeCharactersRepository: FakeCharactersRepository
@@ -51,8 +49,8 @@ class CharactersTest {
     fun viewCharacterTest() {
         setContent()
 
-        composeTestRule.onNodeWithText("Rick").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Rick").performClick()
+        composeTestRule.onNodeWithText("Rick Sanchez").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rick Sanchez").performClick()
 
         composeTestRule.onNodeWithText("Rick").assertIsDisplayed()
         composeTestRule.onNodeWithText("Description").assertIsDisplayed()
@@ -61,7 +59,7 @@ class CharactersTest {
     private fun setContent(){
         composeTestRule.setContent {
             RickAndMortyTheme {
-                CharactersScreen(charactersViewModel,{})
+                RickAndMortyNavGraph()
             }
         }
     }

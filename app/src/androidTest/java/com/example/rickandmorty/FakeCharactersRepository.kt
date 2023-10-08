@@ -22,7 +22,7 @@ class FakeCharactersRepository : CharactersRepository {
         }
     }
 
-    override fun getCharacterDetail(): Flow<SeriesCharacterDetail> = flow {
+    override fun getCharacterDetail(id: Int): Flow<SeriesCharacterDetail> = flow{
         if (!shouldFail) {
             emit(savedCharacterDetail)
         } else {
