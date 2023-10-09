@@ -37,7 +37,11 @@ class CharactersViewModel @Inject constructor(
     private var fetchJob: Job? = null
 
     init {
-        viewModelScope.launch {
+        fetchCharacters()
+    }
+
+    private fun fetchCharacters(): Job {
+        return viewModelScope.launch {
             charactersRepository.getCharacters()
                 .catch { exception ->
                     _uiState.value = CharactersUiState.Error(exception)
@@ -57,7 +61,15 @@ class CharactersViewModel @Inject constructor(
             }
         }
         fetchJob?.cancel()
-        fetchJob = viewModelScope.launch {
+        fetchJob = if (newText == "") {
+            fetchCharacters()
+        } else {
+            filterCharacters(newText)
+        }
+    }
+
+    private fun filterCharacters(newText: String): Job {
+        return viewModelScope.launch {
             charactersRepository.getFilteredCharacters(newText)
                 .catch { exception ->
                     _uiState.value = CharactersUiState.Error(exception)
@@ -72,4 +84,5 @@ class CharactersViewModel @Inject constructor(
                 }
         }
     }
+
 }

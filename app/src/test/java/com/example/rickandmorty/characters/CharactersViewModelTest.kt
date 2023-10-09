@@ -76,4 +76,13 @@ class CharactersViewModelTest {
         assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).characters.size,1)
     }
 
+    @Test
+    fun charactersViewModel_searchText_emptyString() = runTest {
+        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
+        charactersViewModel.updateSearchText("")
+
+        assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).searchText,"")
+        assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).characters.size,3)
+    }
+
 }
