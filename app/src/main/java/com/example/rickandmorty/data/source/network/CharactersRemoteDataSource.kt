@@ -8,4 +8,6 @@ interface CharactersRemoteDataSource {
 
     suspend fun getCharacterDetail(id: Int) : SeriesCharacterDetail
 
+    suspend fun getFilteredCharacters(text: String): List<SeriesCharacter>
+
 }

@@ -30,6 +30,10 @@ class FakeCharactersRemoteDataSource : CharactersRemoteDataSource {
         }
     }
 
+    override suspend fun getFilteredCharacters(text: String): List<SeriesCharacter> {
+        return savedCharacters.filter { it.name.contains(text, ignoreCase = true) }
+    }
+
     @VisibleForTesting
     fun addCharacters(characters: List<SeriesCharacter>) {
         savedCharacters.clear()

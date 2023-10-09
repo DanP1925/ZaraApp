@@ -118,4 +118,20 @@ class DefaultCharactersRepositoryTest {
         assertEquals(characterDetail.species, fakeCharacter.species)
     }
 
+    @Test
+    fun getFilteredCharactersTest() = runTest{
+        fakeRemoteDataSource.addCharacters(getFakeCharacters())
+        characterRepository = DefaultCharactersRepository(
+            fakeRemoteDataSource,
+            fakeLocalDataSource,
+            StandardTestDispatcher(testScheduler)
+        )
+
+        val filteredCharacters = characterRepository.getFilteredCharacters("rick").first()
+        advanceUntilIdle()
+
+        assertEquals(filteredCharacters[0].name,"Rick Sanchez")
+        assertEquals(filteredCharacters.size,1)
+    }
+
 }

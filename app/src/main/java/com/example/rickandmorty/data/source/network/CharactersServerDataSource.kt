@@ -18,4 +18,8 @@ class CharactersServerDataSource @Inject constructor(
         return charactersService.getCharacterDetail(id).toSeriesCharacterDetail()
     }
 
+    override suspend fun getFilteredCharacters(text: String): List<SeriesCharacter> {
+        TODO("Not yet implemented")
+    }
+
 }
