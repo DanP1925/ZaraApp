@@ -66,7 +66,9 @@ fun CharactersScreen(
                 val successUiState = (uiState as CharactersUiState.Success)
                 CharactersContent(
                     successUiState.characters,
-                    onCharacterSelected
+                    successUiState.searchText,
+                    onCharacterSelected,
+                    viewModel::updateSearchText
                 )
             }
 
@@ -84,18 +86,18 @@ fun CharactersScreen(
 @Composable
 fun CharactersContent(
     characters: List<SeriesCharacter>,
+    searchText: String,
     onCharacterSelected: (id: Int) -> Unit,
+    onSearchTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var text by remember { mutableStateOf("") }
-
     Column(
         modifier = modifier
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
+            value = searchText,
+            onValueChange = { onSearchTextChanged(it) },
             label = {
                 Text(stringResource(id = R.string.search))
             },
@@ -188,7 +190,7 @@ fun PreviewCharactersContent() {
     )
 
     RickAndMortyTheme {
-        CharactersContent(fakeCharacters, {})
+        CharactersContent(fakeCharacters, "", {}, {})
     }
 }
 
