@@ -2,7 +2,10 @@ package com.example.rickandmorty.characters
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performKeyInput
+import androidx.compose.ui.test.performTextInput
 import androidx.test.filters.MediumTest
 import com.example.rickandmorty.FakeCharactersRepository
 import com.example.rickandmorty.HiltTestActivity
@@ -11,6 +14,7 @@ import com.example.rickandmorty.ui.theme.RickAndMortyTheme
 import com.example.rickandmorty.R
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,6 +74,17 @@ class CharactersScreenTest {
         composeTestRule.onNodeWithText(errorText)
 
         fakeCharactersRepository.cleanFailFlag()
+    }
+
+    @Test
+    fun searchCharacter(){
+        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
+        setContent()
+
+        composeTestRule.onNodeWithTag("searchTag").performTextInput("rick")
+
+        composeTestRule.onNodeWithText("Rick Sanchez").assertIsDisplayed()
+        assertEquals(fakeCharactersRepository.getNumberOfCharacters(),1)
     }
 
     private fun setContent(){

@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -47,7 +50,7 @@ fun CharacterDetailScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
     ) {
-        when (uiState){
+        when (uiState) {
             is CharacterDetailUiState.Success -> {
                 val successUiState = (uiState as CharacterDetailUiState.Success)
                 CharacterDetailContent(
@@ -55,6 +58,7 @@ fun CharacterDetailScreen(
                     modifier = modifier
                 )
             }
+
             is CharacterDetailUiState.Error -> {
                 Toast.makeText(
                     LocalContext.current,
@@ -79,7 +83,9 @@ fun CharacterDetailContent(
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = characterDetail.name,
@@ -98,7 +104,7 @@ fun CharacterDetailContent(
                     .padding(horizontal = 48.dp)
                     .aspectRatio(1f)
                     .border(2.dp, MaterialTheme.colorScheme.primary),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
             Spacer(modifier = Modifier.height(16.dp))
             CharacterDetailInfo(characterDetail = characterDetail)

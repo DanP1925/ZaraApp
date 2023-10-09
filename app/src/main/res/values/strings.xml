@@ -9,4 +9,5 @@
     <string name="character_detail_origin">Origin</string>
     <string name="character_detail_location">Location</string>
     <string name="character_detail_image">Image</string>
+    <string name="search">Search character</string>
 </resources>

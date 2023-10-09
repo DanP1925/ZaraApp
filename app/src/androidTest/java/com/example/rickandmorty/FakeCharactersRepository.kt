@@ -9,20 +9,21 @@ import kotlinx.coroutines.flow.flow
 
 class FakeCharactersRepository : CharactersRepository {
 
-    private var savedCharacters : MutableList<SeriesCharacter> = emptyList<SeriesCharacter>().toMutableList()
+    private var savedCharacters: MutableList<SeriesCharacter> =
+        emptyList<SeriesCharacter>().toMutableList()
     private var shouldFail = false
 
-    private var savedCharacterDetail : SeriesCharacterDetail = SeriesCharacterDetail()
+    private var savedCharacterDetail: SeriesCharacterDetail = SeriesCharacterDetail()
 
     override fun getCharacters(): Flow<List<SeriesCharacter>> = flow {
-        if (!shouldFail)  {
+        if (!shouldFail) {
             emit(savedCharacters)
         } else {
             throw Exception("Test exception")
         }
     }
 
-    override fun getCharacterDetail(id: Int): Flow<SeriesCharacterDetail> = flow{
+    override fun getCharacterDetail(id: Int): Flow<SeriesCharacterDetail> = flow {
         if (!shouldFail) {
             emit(savedCharacterDetail)
         } else {
@@ -37,18 +38,23 @@ class FakeCharactersRepository : CharactersRepository {
     }
 
     @VisibleForTesting
-    fun makeItFail(){
+    fun makeItFail() {
         shouldFail = true
     }
 
     @VisibleForTesting
-    fun cleanFailFlag(){
+    fun cleanFailFlag() {
         shouldFail = false
     }
 
     @VisibleForTesting
-    fun addCharacterDetail(characterDetail: SeriesCharacterDetail){
+    fun addCharacterDetail(characterDetail: SeriesCharacterDetail) {
         savedCharacterDetail = characterDetail
+    }
+
+    @VisibleForTesting
+    fun getNumberOfCharacters(): Int {
+        return savedCharacters.size
     }
 
 }
