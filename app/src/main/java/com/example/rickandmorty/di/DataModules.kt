@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import com.example.rickandmorty.data.CharactersRepository
 import com.example.rickandmorty.data.DefaultCharactersRepository
 import com.example.rickandmorty.data.source.local.CharacterDao
+import com.example.rickandmorty.data.source.local.CharacterDetailDao
 import com.example.rickandmorty.data.source.local.CharactersDBDataSource
 import com.example.rickandmorty.data.source.local.CharactersLocalDataSource
 import com.example.rickandmorty.data.source.local.RickAndMortyDatabase
@@ -34,11 +35,11 @@ annotation class LocalCharactersDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule{
+object DatabaseModule {
 
     @Singleton
     @Provides
-    fun providesRickAndMortyDatabase(@ApplicationContext context: Context): RickAndMortyDatabase{
+    fun providesRickAndMortyDatabase(@ApplicationContext context: Context): RickAndMortyDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             RickAndMortyDatabase::class.java,
@@ -48,22 +49,31 @@ object DatabaseModule{
 
     @Singleton
     @Provides
-    fun providesCharacterDao(db : RickAndMortyDatabase): CharacterDao{
+    fun providesCharacterDao(db: RickAndMortyDatabase): CharacterDao {
         return db.characterDao()
+    }
+
+    @Singleton
+    @Provides
+    fun providesCharacterDetailDao(db: RickAndMortyDatabase): CharacterDetailDao{
+        return db.characterDetailDao()
     }
 
     @Singleton
     @LocalCharactersDataSource
     @Provides
-    fun providesLocalCharactersDataSource(characterDao : CharacterDao): CharactersLocalDataSource {
-        return CharactersDBDataSource(characterDao)
+    fun providesLocalCharactersDataSource(
+        characterDao: CharacterDao,
+        characterDetailDao: CharacterDetailDao
+    ): CharactersLocalDataSource {
+        return CharactersDBDataSource(characterDao, characterDetailDao)
     }
 
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule{
+object NetworkModule {
 
     @Singleton
     @Provides

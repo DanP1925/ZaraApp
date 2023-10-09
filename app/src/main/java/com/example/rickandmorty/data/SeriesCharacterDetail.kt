@@ -1,5 +1,7 @@
 package com.example.rickandmorty.data
 
+import com.example.rickandmorty.data.source.local.CharacterDetailEntity
+
 data class SeriesCharacterDetail(
     val id: Int = -1,
     val name: String = "",
@@ -11,3 +13,17 @@ data class SeriesCharacterDetail(
     val location: String = "",
     val image: String = ""
 )
+
+fun SeriesCharacterDetail.toCharacterDetailEntity(): CharacterDetailEntity {
+    return CharacterDetailEntity(
+        id = id,
+        name = name,
+        status = status,
+        species = species,
+        type = type,
+        gender = gender,
+        origin = origin,
+        location = location,
+        image = image
+    )
+}

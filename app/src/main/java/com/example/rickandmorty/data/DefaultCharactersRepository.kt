@@ -29,8 +29,14 @@ class DefaultCharactersRepository @Inject constructor(
     }.flowOn(ioDispatcher)
 
     override fun getCharacterDetail(id: Int): Flow<SeriesCharacterDetail> = flow {
-        val characterDetail = charactersRemoteDataSource.getCharacterDetail(id)
-        emit(characterDetail)
+        try {
+            val characterDetail = charactersRemoteDataSource.getCharacterDetail(id)
+            charactersLocalDataSource.deleteCharacterDetail(id)
+            charactersLocalDataSource.saveCharacterDetail(characterDetail)
+            emit(characterDetail)
+        } catch (exception :IOException){
+            emit(charactersLocalDataSource.getCharacterDetail(id))
+        }
     }.flowOn(ioDispatcher)
 
 }
