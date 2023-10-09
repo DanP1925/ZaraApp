@@ -5,8 +5,10 @@ import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,6 +59,7 @@ fun CharactersScreen(
                     onCharacterSelected
                 )
             }
+
             is CharactersUiState.Error -> {
                 Toast.makeText(
                     LocalContext.current,
@@ -101,9 +105,9 @@ fun CharacterItem(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Bottom,
             modifier = Modifier
-                .padding(24.dp)
+                .padding(12.dp)
                 .aspectRatio(1f)
         ) {
             SubcomposeAsyncImage(
@@ -117,12 +121,13 @@ fun CharacterItem(
                     .aspectRatio(1f)
                     .clip(CircleShape)
             )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = character.name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 8.dp),
-                maxLines = 1
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -137,7 +142,7 @@ fun PreviewCharactersContent() {
     val fakeCharacters = listOf<SeriesCharacter>(
         SeriesCharacter(
             1,
-            "Rick Sanchez",
+            "Rick Sanchez Sanchez Sanchez Sanchez",
             "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
         ),
         SeriesCharacter(
@@ -170,6 +175,6 @@ fun PreviewCharacterItem() {
     )
 
     RickAndMortyTheme {
-        CharacterItem(fakeCharacter,{})
+        CharacterItem(fakeCharacter, {})
     }
 }
