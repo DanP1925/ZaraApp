@@ -9,6 +9,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,17 +49,27 @@ class CharactersViewModel @Inject constructor(
     }
 
     fun updateSearchText(newText: String) {
-        if (_uiState.value is CharactersUiState.Success){
+        if (_uiState.value is CharactersUiState.Success) {
             _uiState.update {
                 (it as CharactersUiState.Success).copy(
-                    searchText =  newText
+                    searchText = newText
                 )
             }
         }
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
-            if (_uiState.value is CharactersUiState.Success){
-            }
+            charactersRepository.getFilteredCharacters(newText)
+                .catch { exception ->
+                    _uiState.value = CharactersUiState.Error(exception)
+                }.collect { seriesCharacters ->
+                    if (_uiState.value is CharactersUiState.Success) {
+                        _uiState.update {
+                            (it as CharactersUiState.Success).copy(
+                                characters = seriesCharacters
+                            )
+                        }
+                    }
+                }
         }
     }
 }

@@ -39,4 +39,8 @@ class DefaultCharactersRepository @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
+    override fun getFilteredCharacters(text: String): Flow<List<SeriesCharacter>> {
+        TODO("Not yet implemented")
+    }
+
 }

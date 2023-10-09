@@ -51,6 +51,7 @@ class CharactersViewModelTest {
         assertTrue(charactersViewModel.uiState.value is CharactersUiState.Success)
         val characters = (charactersViewModel.uiState.value as CharactersUiState.Success).characters
         assertEquals(characters.size, 3)
+        assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).searchText,"")
         assertEquals(characters[0].name, "Rick Sanchez")
     }
 
@@ -64,6 +65,15 @@ class CharactersViewModelTest {
         assertEquals(error.message,"Test exception")
 
         fakeCharactersRepository.cleanFailFlag()
+    }
+
+    @Test
+    fun charactersViewModel_searchText() = runTest {
+        charactersViewModel = CharactersViewModel(fakeCharactersRepository)
+
+        charactersViewModel.updateSearchText("Rick")
+        assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).searchText,"Rick")
+        assertEquals((charactersViewModel.uiState.value as CharactersUiState.Success).characters.size,1)
     }
 
 }

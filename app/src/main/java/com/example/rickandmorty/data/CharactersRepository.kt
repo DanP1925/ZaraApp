@@ -8,4 +8,6 @@ interface CharactersRepository {
 
     fun getCharacterDetail(id: Int) : Flow<SeriesCharacterDetail>
 
+    fun getFilteredCharacters(text: String) : Flow<List<SeriesCharacter>>
+
 }
