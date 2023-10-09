@@ -17,7 +17,8 @@ import javax.inject.Inject
 sealed class CharactersUiState {
     data class Success(
         val searchText: String = "",
-        val characters: List<SeriesCharacter> = emptyList()
+        val characters: List<SeriesCharacter> = emptyList(),
+        val isLoading: Boolean = false
     ) : CharactersUiState()
 
     data class Error(
@@ -42,12 +43,17 @@ class CharactersViewModel @Inject constructor(
 
     private fun fetchCharacters(): Job {
         return viewModelScope.launch {
+            _uiState.update {
+                (it as CharactersUiState.Success).copy(
+                    isLoading = true
+                )
+            }
             charactersRepository.getCharacters()
                 .catch { exception ->
                     _uiState.value = CharactersUiState.Error(exception)
                 }
                 .collect { characters ->
-                    _uiState.value = CharactersUiState.Success("", characters)
+                    _uiState.value = CharactersUiState.Success("", characters, isLoading = false)
                 }
         }
     }
@@ -56,7 +62,8 @@ class CharactersViewModel @Inject constructor(
         if (_uiState.value is CharactersUiState.Success) {
             _uiState.update {
                 (it as CharactersUiState.Success).copy(
-                    searchText = newText
+                    searchText = newText,
+                    isLoading = false
                 )
             }
         }
@@ -70,12 +77,18 @@ class CharactersViewModel @Inject constructor(
 
     private fun filterCharacters(newText: String): Job {
         return viewModelScope.launch {
+            _uiState.update {
+                (it as CharactersUiState.Success).copy(
+                    isLoading = true
+                )
+            }
             charactersRepository.getFilteredCharacters(newText)
                 .catch {
                     if (_uiState.value is CharactersUiState.Success) {
                         _uiState.update {
                             (it as CharactersUiState.Success).copy(
-                                characters = emptyList()
+                                characters = emptyList(),
+                                isLoading = false
                             )
                         }
                     }
@@ -83,7 +96,8 @@ class CharactersViewModel @Inject constructor(
                     if (_uiState.value is CharactersUiState.Success) {
                         _uiState.update {
                             (it as CharactersUiState.Success).copy(
-                                characters = seriesCharacters
+                                characters = seriesCharacters,
+                                isLoading = false
                             )
                         }
                     }

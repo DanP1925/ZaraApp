@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -67,6 +69,7 @@ fun CharactersScreen(
                 CharactersContent(
                     successUiState.characters,
                     successUiState.searchText,
+                    successUiState.isLoading,
                     onCharacterSelected,
                     viewModel::updateSearchText
                 )
@@ -87,12 +90,14 @@ fun CharactersScreen(
 fun CharactersContent(
     characters: List<SeriesCharacter>,
     searchText: String,
+    isLoading: Boolean,
     onCharacterSelected: (id: Int) -> Unit,
     onSearchTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         OutlinedTextField(
@@ -106,17 +111,27 @@ fun CharactersContent(
                 .padding(horizontal = 24.dp)
                 .testTag(SEARCH_TAG)
         )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
-            modifier = Modifier
-                .weight(1f)
-                .padding(24.dp)
-        ) {
-            items(characters) { character ->
-                CharacterItem(character, onCharacterSelected)
+        if (!isLoading) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(24.dp)
+            ) {
+                items(characters) { character ->
+                    CharacterItem(character, onCharacterSelected)
+                }
             }
+        } else {
+            Spacer(modifier = Modifier.height(24.dp))
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .height(80.dp)
+                    .width(80.dp)
+            )
         }
     }
 }
@@ -190,7 +205,7 @@ fun PreviewCharactersContent() {
     )
 
     RickAndMortyTheme {
-        CharactersContent(fakeCharacters, "", {}, {})
+        CharactersContent(fakeCharacters, "", false, {}, {})
     }
 }
 
