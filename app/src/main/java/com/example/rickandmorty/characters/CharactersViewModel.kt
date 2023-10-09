@@ -71,8 +71,14 @@ class CharactersViewModel @Inject constructor(
     private fun filterCharacters(newText: String): Job {
         return viewModelScope.launch {
             charactersRepository.getFilteredCharacters(newText)
-                .catch { exception ->
-                    _uiState.value = CharactersUiState.Error(exception)
+                .catch {
+                    if (_uiState.value is CharactersUiState.Success) {
+                        _uiState.update {
+                            (it as CharactersUiState.Success).copy(
+                                characters = emptyList()
+                            )
+                        }
+                    }
                 }.collect { seriesCharacters ->
                     if (_uiState.value is CharactersUiState.Success) {
                         _uiState.update {
