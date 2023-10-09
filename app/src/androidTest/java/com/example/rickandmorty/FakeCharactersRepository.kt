@@ -32,7 +32,7 @@ class FakeCharactersRepository : CharactersRepository {
     }
 
     override fun getFilteredCharacters(text: String): Flow<List<SeriesCharacter>> = flow {
-        emit(savedCharacters.filter { it.name.contains(text) })
+        emit(savedCharacters.filter { it.name.contains(text, ignoreCase = true) })
     }
 
     @VisibleForTesting

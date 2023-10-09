@@ -49,8 +49,9 @@ class CharactersScreenTest {
             "https://rickandmortyapi.com/api/character/avatar/3.jpeg"
         )
     )
+
     @Before
-    fun setupCharacterScreen(){
+    fun setupCharacterScreen() {
         fakeCharactersRepository = FakeCharactersRepository()
         fakeCharactersRepository.addCharacters(getFakeCharacters())
     }
@@ -65,7 +66,7 @@ class CharactersScreenTest {
     }
 
     @Test
-    fun showAllCharacters_error(){
+    fun showAllCharacters_error() {
         fakeCharactersRepository.makeItFail()
         charactersViewModel = CharactersViewModel(fakeCharactersRepository)
         setContent()
@@ -77,20 +78,23 @@ class CharactersScreenTest {
     }
 
     @Test
-    fun searchCharacter(){
+    fun searchCharacter() {
         charactersViewModel = CharactersViewModel(fakeCharactersRepository)
         setContent()
 
         composeTestRule.onNodeWithTag("searchTag").performTextInput("rick")
 
         composeTestRule.onNodeWithText("Rick Sanchez").assertIsDisplayed()
-        assertEquals(fakeCharactersRepository.getNumberOfCharacters(),1)
+        assertEquals(
+            (charactersViewModel.uiState.value as CharactersUiState.Success).characters.size,
+            1
+        )
     }
 
-    private fun setContent(){
+    private fun setContent() {
         composeTestRule.setContent {
             RickAndMortyTheme {
-                CharactersScreen({}, viewModel =  charactersViewModel)
+                CharactersScreen({}, viewModel = charactersViewModel)
             }
         }
     }
