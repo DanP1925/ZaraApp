@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 
 class DefaultCharactersRepositoryTest {
@@ -44,10 +45,14 @@ class DefaultCharactersRepositoryTest {
         "https://rickandmortyapi.com/api/character/avatar/1.jpeg"
     )
 
-    @Test
-    fun getCharactersTest() = runTest{
+    @Before
+    fun setupDataSources(){
         fakeRemoteDataSource = FakeCharactersRemoteDataSource()
         fakeLocalDataSource = FakeCharactersLocalDataSource()
+    }
+
+    @Test
+    fun getCharactersTest() = runTest{
         fakeRemoteDataSource.addCharacters(getFakeCharacters())
         characterRepository = DefaultCharactersRepository(
             fakeRemoteDataSource,
@@ -62,11 +67,24 @@ class DefaultCharactersRepositoryTest {
     }
 
     @Test
+    fun getCharactersTest_NetworkError() = runTest {
+        fakeRemoteDataSource.makeItFail()
+        fakeLocalDataSource.saveCharacters(getFakeCharacters())
+        characterRepository = DefaultCharactersRepository(
+            fakeRemoteDataSource,
+            fakeLocalDataSource,
+            StandardTestDispatcher(testScheduler)
+        )
+
+        val characters = characterRepository.getCharacters().first()
+        advanceUntilIdle()
+
+        assertEquals(characters[0].name, "Rick Sanchez")
+    }
+
+    @Test
     fun getCharacterTest() = runTest{
         val fakeCharacter = getFakeCharacter()
-
-        fakeRemoteDataSource = FakeCharactersRemoteDataSource()
-        fakeLocalDataSource = FakeCharactersLocalDataSource()
         fakeRemoteDataSource.addCharacterDetail(fakeCharacter)
         characterRepository = DefaultCharactersRepository(
             fakeRemoteDataSource,
@@ -79,6 +97,25 @@ class DefaultCharactersRepositoryTest {
         assertEquals(characterDetail.name , "Rick Sanchez")
         assertEquals(characterDetail.status, "Alive")
         assertEquals(characterDetail.species, "Human")
+        assertEquals(fakeLocalDataSource.getCharacterDetail(fakeCharacter.id).name, "Rick Sanchez")
+    }
+
+    @Test
+    fun getCharacterTest_NetworkError() = runTest {
+        val fakeCharacter = getFakeCharacter()
+        fakeRemoteDataSource.makeItFail()
+        fakeLocalDataSource.saveCharacterDetail(getFakeCharacter())
+        characterRepository = DefaultCharactersRepository(
+            fakeRemoteDataSource,
+            fakeLocalDataSource,
+            StandardTestDispatcher(testScheduler)
+        )
+
+        val characterDetail = characterRepository.getCharacterDetail(fakeCharacter.id).first()
+        advanceUntilIdle()
+        assertEquals(characterDetail.name, fakeCharacter.name)
+        assertEquals(characterDetail.status, fakeCharacter.status)
+        assertEquals(characterDetail.species, fakeCharacter.species)
     }
 
 }
