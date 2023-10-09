@@ -19,7 +19,9 @@ class CharactersServerDataSource @Inject constructor(
     }
 
     override suspend fun getFilteredCharacters(text: String): List<SeriesCharacter> {
-        TODO("Not yet implemented")
+        return charactersService.getFilteredCharacters(text).results.map {
+            it.toSeriesCharacter()
+        }
     }
 
 }
